@@ -1,10 +1,9 @@
 import * as core from '@actions/core'
-import { wait } from './wait.js'
+import wait from './wait.ts'
 
 /**
  * The main function for the action.
- *
- * @returns Resolves when the action is complete.
+ * @returns {Promise<void>} Resolves when the action is complete.
  */
 export async function run(): Promise<void> {
   try {
@@ -20,6 +19,29 @@ export async function run(): Promise<void> {
 
     // Set outputs for other workflow steps to use
     core.setOutput('time', new Date().toTimeString())
+
+    // Write an advanced job summary
+    core.summary
+      .addHeading('Advanced Job Summary', 'h2')
+      .addImage(
+        'https://octodex.github.com/images/droidtocat.png',
+        'Droidtocat',
+        {
+          width: '64',
+          height: '64'
+        }
+      )
+      .addTable([
+        [
+          { data: 'File', header: true },
+          { data: 'Result', header: true }
+        ],
+        ['foo.js', 'Pass ✅'],
+        ['bar.js', 'Fail ❌'],
+        ['test.js', 'Pass ✅']
+      ])
+      .addLink('My custom link', 'https://writeabout.net')
+      .write()
   } catch (error) {
     // Fail the workflow run if an error occurs
     if (error instanceof Error) core.setFailed(error.message)
